@@ -36,6 +36,12 @@ namespace {
 
 } // anonymous
 
+std::shared_ptr<ZXing::BinaryBitmap> BinaryBitmapFromJavaGraymap(JNIEnv* env, jobject bytebuffer, int stride, int cropLeft, int cropTop, int cropWidth, int cropHeight)
+{
+	using namespace ZXing;
+    // todo @jz
+    return {};
+}
 std::shared_ptr<ZXing::BinaryBitmap> BinaryBitmapFromJavaBitmap(JNIEnv* env, jobject bitmap, int cropLeft, int cropTop, int cropWidth, int cropHeight)
 {
 	using namespace ZXing;
