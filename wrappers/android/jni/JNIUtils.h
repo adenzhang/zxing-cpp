@@ -36,3 +36,4 @@ class BinaryBitmap;
 std::shared_ptr<ZXing::BinaryBitmap> BinaryBitmapFromJavaBitmap(JNIEnv* env, jobject bitmap, int cropLeft, int cropTop, int cropWidth, int cropHeight);
 void ThrowJavaException(JNIEnv* env, const char* message);
 jstring ToJavaString(JNIEnv* env, const std::wstring& str);
+jbyteArray ToJavaByteArray(JNIEnv* env, const uint8_t* bytes, size_t n);

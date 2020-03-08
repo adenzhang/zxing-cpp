@@ -98,3 +98,33 @@ Java_com_zxing_BarcodeReader_readBarcode(JNIEnv* env, jobject thiz, jlong objPtr
 	}
 	return -1;
 }
+extern "C" JNIEXPORT jint JNICALL
+Java_com_zxing_BarcodeReader_readBarcode2(JNIEnv* env, jobject thiz, jlong objPtr, jobject bitmap, jint left, jint top, jint width, jint height, jobjectArray result)
+{
+	try
+	{
+		auto reader = reinterpret_cast<ZXing::MultiFormatReader*>(objPtr);
+		auto binImage = BinaryBitmapFromJavaBitmap(env, bitmap, left, top, width, height);
+		auto readResult = reader->read(*binImage);
+		if (readResult.isValid()) {
+			env->SetObjectArrayElement(result, 0, ToJavaString(env, readResult.text()));
+			// set byte segment
+			const std::list<ZXing::ByteArray>* bytesList = readResult.metadata().getByteArrayListPtr( ZXing::ResultMetadata::BYTE_SEGMENTS );
+			if( bytesList && !bytesList->empty() ) {
+				const ZXing::ByteArray& byteArray = bytesList->front();
+				auto javaBytes = ToJavaByteArray( env, &byteArray[0], byteArray.size() );
+				env->SetObjectArrayElement( result, 1, javaBytes );
+			}
+			return static_cast<int>(readResult.format());
+		}
+	}
+	catch (const std::exception& e)
+	{
+		ThrowJavaException(env, e.what());
+	}
+	catch (...)
+	{
+		ThrowJavaException(env, "Unknown exception");
+	}
+	return -1;
+}

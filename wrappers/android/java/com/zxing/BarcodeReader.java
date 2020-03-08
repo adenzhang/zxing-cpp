@@ -28,14 +28,23 @@ public class BarcodeReader
 		public String getText() {
 			return text;
 		}
+		public byte[] getByteSegment() {
+			return segment;
+		}
 
 		Result(BarcodeFormat format, String text) {
 			this.format = format;
 			this.text = text;
 		}
+		Result(BarcodeFormat format, String text, byte[] segment) {
+			this.format = format;
+			this.text = text;
+			this.segment = segment;
+		}
 
 		private BarcodeFormat format;
 		private String text;
+		private byte[] segment;
 	}
 
 	public BarcodeReader(BarcodeFormat... formats)
@@ -55,11 +64,11 @@ public class BarcodeReader
 		cropHeight = cropHeight <= 0 ? imgHeight : Math.min(imgHeight, cropHeight);
 		int cropLeft = (imgWidth - cropWidth) / 2;
 		int cropTop = (imgHeight - cropHeight) / 2;
-		Object[] result = new Object[1];
-		int resultFormat = readBarcode(_nativePtr, bitmap, cropLeft, cropTop, cropWidth, cropHeight, result);
+		Object[] result = new Object[2];
+		int resultFormat = readBarcode2(_nativePtr, bitmap, cropLeft, cropTop, cropWidth, cropHeight, result);
 		if (resultFormat >= 0)
 		{
-			return new Result(BarcodeFormat.values()[resultFormat], (String)result[0]);
+			return new Result(BarcodeFormat.values()[resultFormat], (String)result[0], (byte[]) result[1]);
 		}
 		return null;
 	}
@@ -87,9 +96,11 @@ public class BarcodeReader
 	private static native long createInstance(int[] formats);
 	private static native void destroyInstance(long objPtr);
 	private static native int readBarcode(long objPtr, Bitmap bitmap, int left, int top, int width, int height, Object[] result);
+	// result: [ String, byte[] ]
+	private static native int readBarcode2(long objPtr, Bitmap bitmap, int left, int top, int width, int height, Object[] result);
 
 	static {
-		System.loadLibrary("zxing-android");
+		System.loadLibrary("zxing_android");
 	}
 
 }

@@ -32,6 +32,9 @@ struct ResultMetadata::Value
 	virtual std::list<ByteArray> toByteArrayList() const {
 		return std::list<ByteArray>();
 	}
+	virtual const std::list<ByteArray> *asByteArrayList() const {
+		return nullptr;
+	}
 	virtual std::shared_ptr<CustomData> toCustomData() const {
 		return nullptr;
 	}
@@ -65,6 +68,9 @@ struct ResultMetadata::ByteArrayListValue : public Value
 	std::list<ByteArray> toByteArrayList() const override {
 		return value;
 	}
+	const std::list<ByteArray> *asByteArrayList() const override {
+		return &value;
+	}
 };
 
 struct ResultMetadata::CustomDataValue : public Value
@@ -95,6 +101,13 @@ ResultMetadata::getByteArrayList(Key key) const
 {
 	auto it = _contents.find(key);
 	return it != _contents.end() ? it->second->toByteArrayList() : std::list<ByteArray>();
+}
+
+const std::list<ByteArray> *
+ResultMetadata::getByteArrayListPtr(Key key) const
+{
+	auto it = _contents.find(key);
+	return it != _contents.end() ? it->second->asByteArrayList() : nullptr;
 }
 
 std::shared_ptr<CustomData>

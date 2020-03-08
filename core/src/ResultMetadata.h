@@ -121,6 +121,7 @@ public:
 	int getInt(Key key, int fallbackValue = 0) const;
 	std::wstring getString(Key key) const;
 	std::list<ByteArray> getByteArrayList(Key key) const;
+	const std::list<ByteArray> * getByteArrayListPtr(Key key) const;
 	std::shared_ptr<CustomData> getCustomData(Key key) const;
 	
 	void put(Key key, int value);

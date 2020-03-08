@@ -130,3 +130,10 @@ jstring ToJavaString(JNIEnv* env, const std::wstring& str)
 		return env->NewString((const jchar*)buffer.data(), buffer.size());
 	}
 }
+
+jbyteArray ToJavaByteArray(JNIEnv* env, const uint8_t* bytes, size_t size)
+{
+	jbyteArray arr = env->NewByteArray(size);
+	env->SetByteArrayRegion (arr, 0, size, (const jbyte*) bytes);
+	return arr;
+}
